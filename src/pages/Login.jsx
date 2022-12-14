@@ -1,0 +1,82 @@
+import React, { useState } from 'react'
+import {Link, useNavigate} from "react-router-dom"
+import {UserAuth} from '../context/AuthContext';
+
+const Login = () => {
+
+    let [email,
+        setEmail] = useState("");
+    let [password,
+        setPassword] = useState("");
+    let [error, setError] = useState("");
+    
+    let navigate = useNavigate();
+
+    let {user, logIn} = UserAuth();
+
+    let handleSubmit = async(e) => {
+        e.preventDefault();
+        setError("");
+
+        try {
+            await logIn(email, password);
+            setEmail("");
+            setPassword("");
+            navigate("/");
+        } catch (error) {
+            setError(error.message);
+        };
+    };
+
+    return (
+        <div className="w-full h-screen">
+            <img
+                className="hidden sm:block absolute w-full h-full object-cover z-[-10]"
+                src="https://assets.nflxext.com/ffe/siteui/vlv3/f841d4c7-10e1-40af-bcae-07a3f8dc141a/f6d7434e-d6de-4185-a6d4-c77a2d08737b/US-en-20220502-popsignuptwoweeks-perspective_alpha_website_medium.jpg"
+                alt="/"/>
+            <div className="bg-black/60 fixed top-0 left-0 w-full h-screen z-[-10]"></div>
+            <div className="fixed w-full px-4 py-24 z-50">
+                <div className="max-w-[450px] h-[600px] mx-auto bg-black/75 text-white">
+                    <div className="max-w-[320px] mx-auto py-16">
+                        <h1 className="text-3xl font-semibold">Sign In</h1>
+                        {error ? <p className='py-4 text-red-500'>{error}</p> : null}
+                        <form className="w-full flex flex-col py-4" onSubmit={handleSubmit}>
+                            <input
+                                className="p-3 my-2 bg-gray-700 rounded border-none outline-none"
+                                type="text"
+                                placeholder="Email"
+                                autoComplete="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}/>
+                            <input
+                                className="p-3 my-2 bg-gray-700 rounded border-none outline-none"
+                                type="password"
+                                placeholder="Password"
+                                autoComplete="current-password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}/>
+                            <button className="w-full bg-red-600 py-3 my-6 rounded font-medium">
+                                Sign In
+                            </button>
+                            <div className="flex items-center justify-between text-sm text-gray-500">
+                                <p>
+                                    <input className="mr-2" type="checkbox"/>
+                                    Remember me
+                                </p>
+                                <p>Need help?</p>
+                            </div>
+                            <p className="py-4">
+                                <span className="mr-2 text-gray-500">
+                                    New to Netflix?
+                                </span>
+                                <Link to="/signup">Sign Up</Link>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default Login
